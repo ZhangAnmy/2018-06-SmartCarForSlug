@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="factory.dao.CarDao">
+
+	<resultMap type="factory.entity.Car" id="carMap">
+		<id property="id" column="id" />
+		<result property="driverId" column="driver_id" />
+		<result property="license" column="license" />
+		<result property="longitude" column="longitude" />
+		<result property="latitude" column="latitude" />
+		<result property="brand" column="brand" />
+		<result property="sensorIdSet" column="sensor_id_set" />
+		<result property="status" column="status" />
+		<association property="driver" javaType="factory.entity.User">
+			<id property="id" column="id" />
+			<result property="username" column="username" />
+			<result property="realname" column="realname" />
+			<result property="telephone" column="telephone" />
+			<result property="email" column="email" />
+		</association>
+	</resultMap>
+
+	<select id="queryCarThatAllocationDriver" resultMap="carMap">
+		SELECT *
+		FROM car,user
+		WHERE
+		car.del_status=0 AND
+		car.driver_id IS NOT NULL AND
+		car.driver_id=user.id
+	</select>
+	
+	<select id="queryCarThatNotAllocationDriver" resultType="factory.entity.Car">
+		SELECT id,license,brand,sensor_id_set,status
+		FROM car
+		where car.del_status=0 and driver_id IS NULL
+		
+	</select>
+
+	<select id="queryCarByDriverId" resultType="factory.entity.Car">
+		SELECT *
+		FROM car
+		WHERE driver_id=#{driverId}
+	</select>
+
+	<select id="queryCarByLicense" resultType="factory.entity.Car">
+		SELECT *
+		FROM car
+		WHERE
+		license=#{license}
+	</select>
+
+	<select id="queryCarByStatus" resultType="factory.entity.Car">
+		SELECT *
+		FROM car
+		WHERE
+		status=#{status}
+	</select>
+
+	<update id="deleteCar">
+		UPDATE car
+		SET del_status=1
+		WHERE del_status=0 AND
+		id=#{carId}
+	</update>
+
+	<insert id="addCar" parameterType="factory.entity.Car"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT
+		INTO car
+		<choose>
+			<when test='driverId==-1'>
+				(license,brand)
+				VALUES(#{license},#{brand})
+			</when>
+			<otherwise>
+				(license,brand,driver_id)
+				VALUES(#{license},#{brand},#{driverId})
+			</otherwise>
+		</choose>
+	</insert>
+
+	<update id="editCar" parameterType="factory.entity.Car">
+		UPDATE car
+		<choose>
+			<when test='driverId==-1'>
+				set license=#{license},brand=#{brand},driver_id=null
+			</when>
+			<otherwise>
+				set
+				license=#{license},brand=#{brand},driver_id=#{driverId}
+			</otherwise>
+		</choose>
+		WHERE del_status=0 AND
+		id=#{id}
+	</update>
+
+	<select id="fuzzyQueryCarWithDriver" resultMap="carMap">
+		SELECT *
+		FROM
+		car,`user`
+		where car.del_status=0 and car.driver_id=`user`.id and
+		car.driver_id in
+		(
+		SELECT DISTINCT id
+		FROM car
+		WHERE car.driver_id in (
+		select
+		DISTINCT id
+		from
+		`user`
+		where `user`.realname LIKE
+		CONCAT('%',#{condition},'%') OR
+		`user`.telephone LIKE
+		CONCAT('%',#{condition},'%')
+		) OR car.license LIKE
+		CONCAT('%',#{condition},'%') OR car.brand LIKE
+		CONCAT('%',#{condition},'%')
+		)
+	</select>
+
+	<select id="fuzzyQueryCarWithNoDriver" resultType="factory.entity.Car">
+		SELECT *
+		FROM car
+		where car.id IN (
+		select id
+		FROM car
+		where car.del_status=0 AND car.brand LIKE CONCAT('%',#{condition},'%') OR car.license LIKE
+		CONCAT('%',#{condition},'%')
+		) and driver_id IS NULL
+	</select>
+</mapper>

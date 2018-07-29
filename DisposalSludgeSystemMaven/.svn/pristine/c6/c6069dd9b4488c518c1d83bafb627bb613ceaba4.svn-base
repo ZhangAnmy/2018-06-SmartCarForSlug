@@ -1,0 +1,27 @@
+package factory.service;
+
+import factory.entity.User;
+
+public interface UserLoginService {
+	/**
+	 * 
+	 * @author:凡鑫
+	 * @data:2018年3月7日
+	 * @time:下午3:24:51 
+	 * @param username
+	 * @return
+	 * @description:按照用户名查询用户信息
+	 */
+	public User queryUserByUsername(String username);
+	
+	
+	/**
+	 * 
+	 * @author:凡鑫
+	 * @data:2018年3月7日
+	 * @time:下午3:25:13 
+	 * @param user
+	 * @description:注册用户
+	 */
+	public void registerUser(User user);
+}

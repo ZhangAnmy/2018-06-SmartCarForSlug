@@ -1,0 +1,437 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<base href="<%=basePath%>">
+
+<title>My JSP 'driverManage.jsp' starting page</title>
+
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="expires" content="0">
+<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+<meta http-equiv="description" content="This is my page">
+<link rel="shortcut icon" href="favicon.ico">
+<link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+<link href="css/plugins/bootstrap-table/bootstrap-table.min.css"
+	rel="stylesheet">
+<link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+
+<link href="css/style.css?v=4.1.0" rel="stylesheet">
+<style>
+body {
+	height: 100%;
+}
+
+.search-content {
+	margin-top: 2%;
+	height: 36px;
+}
+
+.search-right {
+	width: 50%;
+	float: right;
+}
+
+.search-left {
+	width: 50%;
+	float: left;
+}
+
+.query-department {
+	padding: 1 1;
+}
+
+.col-sm-12 {
+	top: auto;
+}
+
+.td {
+	width: 400px;
+}
+
+.form-group {
+	bottom: 5px;
+}
+
+.box2 {
+	width: 100px;
+	float: center;
+	display: inline;
+	border: inherit 1px solid;
+}
+
+.box3 {
+	width: 100px;
+	float: center;
+	display: inline;
+	border: inherit 1px solid;
+}
+</style>
+</head>
+
+<body>
+	<!-- 模态框   信息删除确认 -->
+	<div class="modal fade" id="delcfmOverhaul" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="delcfmOverhaul">删除</h4>
+				</div>
+				<div class="modal-body">确定删除本条记录？</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">否</button>
+					<button type="button" class="btn btn-primary">是</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal -->
+		>
+	</div>
+
+	<div class="modal inmodal" id="myModal" tabindex="-1" role="dialog"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content animated bounceInRight">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span><span class="sr-only">关闭</span>
+					</button>
+					<img alt="140x140" src="img/littercar.png" width="10%" height="10%" />
+					<h4 class="modal-title">新增传感器</h4>
+				</div>
+				<div class="modal-body">
+					<div class="container" style="width: 540px">
+						<div class="form-group">
+							<div>
+								<label for="Groupname" class="col-sm-3 control-label">设备号：</label>
+								<div class="col-sm-9">
+									<input type="text" class="form-control m-b control-label"
+										id="firstname" placeholder="请输入设备号">
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div>
+								<label for="Groupname" class="col-sm-3 control-label">类型：</label>
+								<div class="col-sm-9">
+									<select class="form-control m-b" name="account">
+										<option value="choose">--请选择--</option>
+										<option>液压传感器</option>
+										<option>GPS</option>
+										<option>网络摄像头</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div>
+								<label for="Groupname" class="col-sm-3 control-label">位置：</label>
+								<div class="col-sm-9">
+									<select class="form-control m-b" name="account">
+										<option value="choose">--请选择--</option>
+										<option>湘A******</option>
+										<option>湘B******</option>
+										<option>湘C******</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
+					<button type="button" class="btn btn-primary">保存</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="search-content">
+		<div class="search-right">
+			<div class="col-xs-2 query-department">
+				<form method="get" class="form-horizontal">
+					<div class="form-group">
+						<div>
+							<input type="text" class="form-control" placeholder="请输入设备号">
+						</div>
+					</div>
+			</div>
+			<div class="col-xs-4 query-department">
+				<div class="form-group">
+					<div>
+						<select class="form-control m-b" name="account">
+							<option value="choose">--请选择设备类型--</option>
+							<option>压液压传感器</option>
+							<option>GPS</option>
+							<option>网络摄像头</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-4 query-department">
+				<div class="form-group">
+					<div>
+						<select class="form-control m-b" name="account">
+							<option value="choose">--请选择设备状态--</option>
+							<option>正常</option>
+							<option>异常</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-2 query-department">
+				<button class="btn btn-primary" type="button">查询</button>
+			</div>
+		</div>
+		<div class="search-left">
+			<div class="col-xs-3 query-department text-center">
+				<button type="button" class="btn btn-primary" data-toggle="modal"
+					data-target="#myModal">+ 新增传感器</button>
+			</div>
+		</div>
+		<!-- 模态框  新增 -->
+
+		<div class="col-sm-12">
+			<!-- Example Pagination -->
+			<div class="example-wrap">
+				<div class="example">
+					<table id="exampleTablePagination" data-toggle="table"
+						 data-height="500" data-mobile-responsive="true"
+						data-pagination="true" data-icon-size="outline">
+						<thead>
+							<tr>
+								<th data-field="No">编号</th>
+								<th data-field="siteName">厂名</th>
+								<th data-field="address">地址</th>
+								<th data-field="tel">电话</th>
+								<th data-field="manager">负责人</th>
+								<th data-field="device">设备</th>
+								<th data-field="sensors">操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td>G2323</td>
+								<td>GPS</td>
+								<td>污泥处理车</td>
+								<td>正常</td>
+								<td>
+									<div>
+										<a data-toggle="modal" data-target="#delcfmOverhaul">删除</a>
+									</div>
+								</td>
+							</tr>
+							<!-- 模态框   信息删除确认 -->
+							<div class="modal fade" id="delcfmOverhaul" tabindex="-1"
+								role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal"
+												aria-hidden="true">&times;</button>
+											<h4 class="modal-title" id="delcfmOverhaul">删除</h4>
+										</div>
+										<div class="modal-body">确定删除本条记录？</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-default"
+												data-dismiss="modal">是</button>
+											<button type="button" class="btn btn-primary">否</button>
+										</div>
+									</div>
+									<!-- /.modal-content -->
+								</div>
+								<!-- /.modal -->
+								>
+							</div>
+							<tr>
+								<td>2</td>
+								<td>G2323</td>
+								<td>GPS</td>
+								<td>污泥处理车</td>
+								<td>正常</td>
+								<td>
+									<div>
+										<a data-toggle="modal" data-target="#delcfmOverhaul">删除</a>
+									</div>
+								</td>
+							</tr>
+
+							<tr>
+								<td>3</td>
+								<td>G2323</td>
+								<td>GPS</td>
+								<td>污泥处理车</td>
+								<td>正常</td>
+								<td>
+									<div>
+										<a data-toggle="modal" data-target="#delcfmOverhaul">删除</a>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>4</td>
+								<td>G2323</td>
+								<td>GPS</td>
+								<td>污泥处理车</td>
+								<td>正常</td>
+								<td>
+									<div>
+										<a data-toggle="modal" data-target="#delcfmOverhaul">删除</a>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>5</td>
+								<td>G2323</td>
+								<td>GPS</td>
+								<td>污泥处理车</td>
+								<td>正常</td>
+								<td>
+									<div>
+										<a data-toggle="modal" data-target="#delcfmOverhaul">删除</a>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>6</td>
+								<td>G2323</td>
+								<td>GPS</td>
+								<td>污泥处理车</td>
+								<td>正常</td>
+								<td>
+									<div>
+										<a data-toggle="modal" data-target="#delcfmOverhaul">删除</a>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>7</td>
+								<td>G2323</td>
+								<td>GPS</td>
+								<td>污泥处理车</td>
+								<td>正常</td>
+								<td><di> <a data-toggle="modal"
+										data-target="#delcfmOverhaul">删除</a>
+									</div></td>
+							</tr>
+							<tr>
+								<td>8</td>
+								<td>G2323</td>
+								<td>GPS</td>
+								<td>污泥处理车</td>
+								<td>正常</td>
+								<td>
+									<div>
+										<a data-toggle="modal" data-target="#delcfmOverhaul">删除</a>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>9</td>
+								<td>G2323</td>
+								<td>GPS</td>
+								<td>污泥处理车</td>
+								<td>正常</td>
+								<td>
+									<div>
+										<a data-toggle="modal" data-target="#delcfmOverhaul">删除</a>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>10</td>
+								<td>G2323</td>
+								<td>GPS</td>
+								<td>污泥处理车</td>
+								<td>正常</td>
+								<td>
+									<div>
+										<a data-toggle="modal" data-target="#delcfmOverhaul">删除</a>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>11</td>
+								<td>G2323</td>
+								<td>GPS</td>
+								<td>污泥处理车</td>
+								<td>正常</td>
+								<td>
+									<div>
+										<a data-toggle="modal" data-target="#delcfmOverhaul">删除</a>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>12</td>
+								<td>G2323</td>
+								<td>GPS</td>
+								<td>污泥处理车</td>
+								<td>正常</td>
+								<td>
+									<div>
+										<a data-toggle="modal" data-target="#delcfmOverhaul">删除</a>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>13</td>
+								<td>G2323</td>
+								<td>GPS</td>
+								<td>污泥处理车</td>
+								<td>正常</td>
+								<td>
+									<div>
+										<a data-toggle="modal" data-target="#delcfmOverhaul">删除</a>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>14</td>
+								<td>G2323</td>
+								<td>GPS</td>
+								<td>污泥处理车</td>
+								<td>正常</td>
+								<td>
+									<div>
+										<a data-toggle="modal" data-target="#delcfmOverhaul">删除</a>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!-- End Example Pagination -->
+			<!-- 全局js -->
+			<script src="js/jquery.min.js?v=2.1.4"></script>
+			<script src="js/bootstrap.min.js?v=3.3.6"></script>
+
+			<!-- 自定义js -->
+			<script src="js/content.js?v=1.0.0"></script>
+
+			<!-- Bootstrap table -->
+			<script src="js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+			<script
+				src="js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+			<script
+				src="js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+
+			<!-- Peity -->
+			<script src="js/demo/bootstrap-table-demo.js"></script>
+			
+			
+</body>
+
+</html>

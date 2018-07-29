@@ -1,0 +1,94 @@
+package factory.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import factory.entity.Car;
+import factory.entity.Sensor;
+import factory.entity.SensorType;
+import factory.entity.Site;
+import factory.service.CarService;
+import factory.service.SensorService;
+import factory.service.SiteService;
+import net.sf.json.JSONArray;
+
+
+@Controller
+@RequestMapping("sensor")
+public class SensorController {
+	@Autowired
+	private SensorService sensorService;
+	@Autowired
+	private CarService carService;
+	@Autowired
+	private SiteService siteService;
+	
+	private Log log=LogFactory.getLog(SensorController.class);
+	@RequestMapping("jumpToDeviceManage")
+	public ModelAndView jumpToDeviceManageJSP(ModelAndView mv){
+		log.info("调用jumpToDeviceManageJSP");
+		List<SensorType> sensorTypes=sensorService.queryAllSensorType();
+		List<Sensor> sensors=sensorService.queryAllSensorOfCar();
+		List<Sensor> siteSensors=sensorService.queryAllSensorOfSite();
+		List<Car> cars=carService.queryAllCar();
+		List<Site> sites=siteService.queryAllSite();
+		sensors.addAll(siteSensors);
+		for(Sensor sensor:sensors){
+			System.out.println(sensor.getCar().getId()+"  "+sensor.getSite().getId());
+		}
+		mv.addObject("sensorTypeList",sensorTypes);
+		mv.addObject("sensorList",sensors);
+		JSONArray carJson=JSONArray.fromObject(cars);
+		JSONArray siteJson=JSONArray.fromObject(sites);
+		mv.addObject("carList",carJson.toString());
+		mv.addObject("siteList",siteJson.toString());		
+		mv.setViewName("system/deviceManage");
+		return mv;
+	}
+	@RequestMapping("addSensor")
+	@ResponseBody
+	public Map<String, String> addSensor(@RequestBody Map<String, String> sensorInfo){
+		log.info("调用增加传感器");
+		Map<String, String> result=new HashMap<String, String>();
+		try {
+			for(Map.Entry<String, String> entry:sensorInfo.entrySet()){
+				System.out.println(entry.getKey()+" "+entry.getValue());
+			}
+			sensorService.addSensor(sensorInfo);
+			result.put("result","success");
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			result.put("result","failure");
+		}
+		return result;
+		
+	}
+	
+	@RequestMapping("deleteSensor")
+	@ResponseBody
+	public Map<String, String> deleteSensor(@RequestBody Map<String, Integer> deleteSensorInfo){
+		Map<String, String> result=new HashMap<String, String>();
+		sensorService.deleteSensor(deleteSensorInfo);
+		return result;
+	}
+	
+	@RequestMapping("conditionalQuery")
+	@ResponseBody
+	public List<Sensor> conditionQuery(@RequestBody Map<String, String> condition){
+		return sensorService.conditionQuery(condition);
+	}
+	
+
+}

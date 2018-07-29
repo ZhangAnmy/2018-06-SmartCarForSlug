@@ -1,0 +1,8 @@
+package factory.dao;
+
+import factory.entity.User;
+
+public interface UserLoginDao{
+	public User queryUserByUsername(String username);
+	public void registerUser(User user);
+}

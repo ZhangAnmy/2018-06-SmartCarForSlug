@@ -1,0 +1,124 @@
+package factory.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import factory.entity.Car;
+import factory.entity.User;
+import factory.service.CarService;
+
+
+@Controller
+@RequestMapping(value="car")
+public class CarController {
+	@Autowired
+	private CarService carService;
+	private static Log log=LogFactory.getLog(CarController.class);
+	
+	/**
+	 * @description:从car表中查询所有车辆
+	 */
+	@RequestMapping("carManage")
+	public ModelAndView jumpToCarManage(ModelAndView mv){
+		Map<String, List<User>> listMap=new HashMap<String, List<User>>();
+		listMap.putAll(carService.queryDrivers());
+		mv.addObject("allDriverList",listMap.get("allDriverList"));
+		mv.addObject("NoCarAssignedDriverList",listMap.get("NoCarAssignedDriverList"));
+		mv.setViewName("system/carManage");
+		return mv;
+	}
+	
+	@RequestMapping("queryAllCar")
+	@ResponseBody
+	public List<Car> queryAllCar(){
+		log.info("调用queryAllCar");
+		List<Car> cars=carService.queryAllCar();
+		return cars;
+	}
+	
+	@RequestMapping("queryCarByLicense")
+	@ResponseBody
+	public Car queryCarByLicense(@RequestParam("license") String license,Model model){
+		log.info("调用queryCarByLicense");
+		Car car = carService.queryCarByLicense(license);
+		return car;
+	}
+	
+	@RequestMapping("queryCarByStatus")
+	@ResponseBody
+	public List<Car> queryCarByStatus(@RequestParam("status") int status,Model model){
+		log.info("调用queryCarByStatus");
+		List<Car> cars =carService.queryCarByStatus(status);
+		return cars;
+	}
+	
+	@RequestMapping("deleteCar")
+	@ResponseBody
+	public Map<String, String> deleteCar(@RequestParam("carId") int carId){
+		log.info("调用删除car");
+		Map<String, String> result=new HashMap<String, String>();
+		try {
+			carService.deleteCar(carId);
+			result.put("result", "success");
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			result.put("result","failuer");
+		}
+		return result;
+	}
+	
+	@RequestMapping("addCar")
+	@ResponseBody
+	public Map<String, Integer> addCar(@RequestBody Car car){
+		log.info("调用addCar");
+		log.info(car.getLicense()+"  "+car.getBrand()+"  "+car.getDriverId());
+		Map<String, Integer> map=new HashMap<String, Integer>();
+		int carId=carService.addCar(car);
+		map.put("carId", carId);
+		return map;
+	}
+	
+	@RequestMapping("editCar")
+	@ResponseBody
+	public Map<String, String> editCar(@RequestBody Car car){
+		log.info("调用修改车辆信息的方法");
+		log.info(car.getLicense()+" "+car.getId()+" "+car.getBrand()+" "+car.getDriverId());
+		Map<String, String> editResult=new HashMap<String, String>();
+		try {
+			carService.editCar(car);
+			editResult.put("result", "success");
+		} catch (Exception e) {
+			// TODO: handle exception
+			editResult.put("result", "failure");
+		}
+		return editResult;
+	}
+	
+	@RequestMapping("fuzzyQueryCar")
+	@ResponseBody
+	public List<Car> fuzzyQueryCar(@RequestParam("condition") String condition){
+		List<Car> cars=new ArrayList<Car>();
+		if(condition.equals("none")){
+			cars.addAll(carService.queryAllCar());
+		}
+		else {
+			cars.addAll(carService.fuzzyQueryCar(condition));
+		}
+		return cars;
+	}
+
+}

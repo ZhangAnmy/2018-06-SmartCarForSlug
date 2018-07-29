@@ -1,0 +1,22 @@
+package test;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import factory.dao.UserLoginDao;
+import factory.entity.User;
+
+
+
+public class UserLoginTest extends BaseTest{
+	@Autowired
+	private UserLoginDao userLoginDao;
+	
+	@Test
+	public void queryUserByUsername(){
+		String username="fanxin";
+		User user=userLoginDao.queryUserByUsername(username);
+		System.out.println(user.getUsername()+" "+user.getPassword());
+	}
+}
+

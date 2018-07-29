@@ -1,0 +1,96 @@
+package factory.serviceimpl;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import factory.dao.SludgeDao;
+import factory.entity.Sensor;
+import factory.entity.Sludge;
+import factory.entity.SludgeFunction;
+import factory.service.SludgeService;
+@Service
+public class SludgeServiceImpl implements SludgeService{
+	@Autowired
+	private SludgeDao sludgeDao;
+	@Override
+	public List<SludgeFunction> queryAllSludgeFunction() {
+		return sludgeDao.queryAllSludgeFunction();
+	}
+	@Override
+	public List<Sludge> queryAllSludge() {
+		List<Sludge> sludges=new ArrayList<Sludge>();
+		sludges.addAll(sludgeDao.queryAllSludgeAssignFunc());
+		sludges.addAll(sludgeDao.queryAllSludgeNotAssignFunc());
+		Collections.sort(sludges, new Comparator<Sludge>() {
+			public int compare(Sludge arg0, Sludge arg1) {
+				return arg1.getProduceTime().compareTo(arg0.getProduceTime());
+			}
+		});
+		return sludges;
+	}
+	@Override
+	public void deleteSludge(int sludgeId) {
+		sludgeDao.deleteSludge(sludgeId);
+		
+	}
+	@Override
+	public void editSludge(Sludge sludge) {
+		if(sludge.getRfidString().equals("none")){
+			sludge.setRfidString(null);
+		}
+		if(sludge.getDestinationAddress().equals("none")){
+			sludge.setRfidString(null);
+		}
+		sludgeDao.editSludge(sludge);
+		
+	}
+	@Override
+	public List<Sludge> querySludgeBySiteId(int siteId) {
+		// TODO Auto-generated method stub
+		List<Sludge> sludges=new ArrayList<Sludge>();
+		sludges.addAll(sludgeDao.querySludgeAssignFuncBySiteId(siteId));
+		sludges.addAll(sludgeDao.querySludgeNotAssignFuncBySiteId(siteId));
+		Collections.sort(sludges, new Comparator<Sludge>() {
+			public int compare(Sludge arg0, Sludge arg1) {
+				return arg1.getProduceTime().compareTo(arg0.getProduceTime());
+			}
+		});
+		return sludges;
+		
+	}
+	@Override
+	public List<Sludge> querySludgeByDriverId(int driverId) {
+		List<Sludge> sludges=new ArrayList<Sludge>();
+		sludges.addAll(sludgeDao.querySludgeAssignFuncByDriverId(driverId));
+		sludges.addAll(sludgeDao.querySludgeNotAssignFuncByDriverId(driverId));
+		Collections.sort(sludges, new Comparator<Sludge>() {
+			public int compare(Sludge arg0, Sludge arg1) {
+				return arg1.getProduceTime().compareTo(arg0.getProduceTime());
+			}
+		});
+		return sludges;
+	}
+	@Override
+	public List<Sludge> querySludgeByDate(String startDate, String endDate) {
+		List<Sludge> sludges=new ArrayList<Sludge>();
+		sludges.addAll(sludgeDao.querySludegAssignFuncByDate(startDate, endDate));
+		sludges.addAll(sludgeDao.querySludegNotAssignFuncByDate(startDate, endDate));
+		Collections.sort(sludges, new Comparator<Sludge>() {
+			public int compare(Sludge arg0, Sludge arg1) {
+				return arg1.getProduceTime().compareTo(arg0.getProduceTime());
+			}
+		});
+		return sludges;
+		
+	}
+	
+	
+
+	
+
+}

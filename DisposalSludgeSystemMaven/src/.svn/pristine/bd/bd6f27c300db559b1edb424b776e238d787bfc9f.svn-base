@@ -1,0 +1,40 @@
+package factory.serviceimpl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import factory.dao.CarDao;
+import factory.entity.Car;
+import factory.service.CarService;
+
+@Service
+public class CarServiceImpl implements CarService{
+	@Autowired
+	private CarDao carDao;
+
+	@Override
+	public List<Car> queryAllCar() {
+		// TODO Auto-generated method stub
+		return carDao.queryAllCar();
+	}
+	/**
+	 * 通过driverId查询Car
+	 */
+	@Override
+	public Car queryCarByDriverId(int driverId) {
+		// TODO Auto-generated method stub
+		return carDao.queryCarByDriverId(driverId);
+	}
+	
+	/**
+	 * 通过license查询Car
+	 */
+	@Override
+	public Car queryCarByLicense(String license) {
+		// TODO Auto-generated method stub
+		return carDao.queryCarByLicense(license);
+	}
+
+}

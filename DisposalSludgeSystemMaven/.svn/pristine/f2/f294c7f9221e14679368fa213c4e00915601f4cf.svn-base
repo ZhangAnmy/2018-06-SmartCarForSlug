@@ -1,0 +1,11 @@
+package factory.dao;
+
+import java.util.List;
+
+import factory.entity.Site;
+
+public interface SiteDao {
+
+	public List<Site> queryAllSite();
+
+}

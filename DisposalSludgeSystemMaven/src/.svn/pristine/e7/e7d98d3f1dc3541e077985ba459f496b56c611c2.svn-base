@@ -1,0 +1,50 @@
+package factory.service;
+
+import java.util.List;
+import java.util.Map;
+
+import factory.entity.User;
+
+public interface UserService {
+	/**
+	 * 
+	 * @author:凡鑫
+	 * @data:2018年3月7日
+	 * @time:下午3:24:51 
+	 * @param username
+	 * @return
+	 * @description:按照用户名查询用户信息
+	 */
+	public User queryUserByUsername(String username);
+	
+	
+	/**
+	 * 
+	 * @author:凡鑫
+	 * @data:2018年3月7日
+	 * @time:下午3:25:13 
+	 * @param user
+	 * @description:注册用户
+	 */
+	public void registerUser(User user);
+	
+	
+	public List<User> quertAllDriver();
+	
+	public User queryUserByRealName(String realname);
+	
+	/*public void removdeUser(String name);*/
+	public void deleteUser(Map<String, Integer> deleteUserInfo);
+	
+	public List<User> queryDriverServeOneFactory(int siteId);
+	
+	public Map<String, String> modifyPasswordByUsername(Map<String, Object> userInfo);
+
+	public boolean isUserExist(String username);
+	
+	public List<User> queryAllManager();
+
+	public void updateUserInfo(User user);
+
+	public User queryUserByUserId(int userId);
+}

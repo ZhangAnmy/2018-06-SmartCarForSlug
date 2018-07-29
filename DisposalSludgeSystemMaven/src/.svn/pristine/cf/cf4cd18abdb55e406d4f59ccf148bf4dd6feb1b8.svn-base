@@ -1,0 +1,24 @@
+package factory.service;
+
+import java.util.List;
+
+import factory.entity.Sludge;
+import factory.entity.SludgeFunction;
+
+public interface SludgeService {
+	
+	public List<SludgeFunction> queryAllSludgeFunction();
+	
+	public List<Sludge> queryAllSludge();
+	
+	public void deleteSludge(int sludgeId);
+	
+	public void editSludge(Sludge sludge);
+	
+	public List<Sludge> querySludgeBySiteId(int siteId);
+	
+	public List<Sludge> querySludgeByDriverId(int driverId);
+	
+	public List<Sludge> querySludgeByDate(String startDate,String endDate);
+
+}

@@ -1,0 +1,41 @@
+package factory.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import factory.entity.User;
+
+public interface UserDao{
+	public User queryUserByUsername(String username);
+	
+	public User queryUserByUserId(@Param("userId") int userId);
+	
+	public User queryUserByRealName(@Param("realname") String realname);
+	
+	public void registerUser(User user);
+	
+	public List<User> queryAllDriver();
+	
+	/**
+	 * @description:查询还没有分配汽车的司机
+	 */
+	public List<User> queryNoCarAssignedDriver();
+	
+	/*public User removeUser(String name);*/
+	public void delectUser(@Param("userId") int userId);
+	
+	
+	public List<User> queryDriverServeOneFactory(@Param("siteId") int siteId);
+	
+	public int modifyPasswordByUsername(User user);
+	
+	public void updateUserInfo(User user);
+	
+	public void addUserByRealName(User user);
+
+	public List<User> queryAllManager();
+
+	public User queryManagerByRealName(User user);
+	
+}

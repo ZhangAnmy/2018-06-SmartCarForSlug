@@ -1,0 +1,70 @@
+package factory.serviceimpl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import factory.dao.RecordDao;
+import factory.entity.Record;
+import factory.service.RecordService;
+
+@Service
+public class RecordServiceImpl implements RecordService{
+	@Autowired
+	private RecordDao recordDao;
+	
+	/**
+	 * 查询所有的处理记录
+	 */
+	@Override
+	public List<Record> queryAllRecord() {
+		// TODO Auto-generated method stub
+		return recordDao.queryAllRecord();
+	}
+	/**
+	 * 通过工厂名来查询处理记录
+	 */
+	@Override
+	public List<Record> queryRecordBySiteName(String siteName) {
+		// TODO Auto-generated method stub
+		return recordDao.queryRecordBySiteName(siteName);
+	}
+	/**
+	 * 通过处理人(司机)来查询处理记录
+	 */
+	@Override
+	public List<Record> queryRecordByDriverName(String driverName) {
+		// TODO Auto-generated method stub
+		return recordDao.queryRecordByDriverName(driverName);
+	}
+
+	/**
+	 * 通过日期查询处理记录
+	 */
+	@Override
+	public List<Record> queryRecordByDate(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		return recordDao.queryRecordByDate(startDate, endDate);
+	}
+	/**
+	 * 修改处理人
+	 */
+	@Override
+	public void updateCarId(int recordId, int carId) {
+		// TODO Auto-generated method stub
+		recordDao.updateCarId(recordId, carId);
+		
+	}
+	
+	/**
+	 * 删除记录
+	 */
+	@Override
+	public void deleteRecord(int recordId) {
+		// TODO Auto-generated method stub
+		recordDao.deleteRecord(recordId);
+	}
+	
+
+}

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="factory.dao.SiteDao">
+	<resultMap id="SiteMap" type="factory.entity.Site">
+		<id property="id" column="id"></id>
+		<result property="serialNumber" column="serial_number"></result>
+		<result property="siteName" column="site_name"></result>
+		<result property="address" column="address"></result>
+		<result property="latitude" column="latitude"></result>
+		<result property="longitude" column="longitude"></result>
+		<result property="telephone" column="telephone"></result>
+		<result property="depth" column="depth" />
+		<result property="manageId" column="manage_id" />
+		<result property="sensorIdSet" column="sensor_id_set" />
+		<association property="manage" javaType="factory.entity.User">
+			<id property="id" column="id" />
+			<result property="username" column="username" />
+			<result property="realname" column="realname" />
+			<result property="telephone" column="telephone" />
+			<result property="email" column="email" />
+		</association>
+	</resultMap>
+
+	<select id="queryAllSite" resultMap="SiteMap">
+		SELECT *
+		FROM site,user
+		WHERE site.del_status=0 AND site.manage_id=user.id;
+	</select>
+	
+	<select id="querySiteBySiteName" resultType="factory.entity.Site">
+		SELECT *
+		FROM site
+		WHERE del_status=0 AND site_name=#{siteName}
+	</select>
+	
+	<select id="querySiteById" resultType="factory.entity.Site">
+		SELECT *
+		FROM site
+		WHERE del_status=0 AND id=#{id}
+	</select>
+
+	<select id="fuzzyQuerySite" resultMap="SiteMap">
+		SELECT * 
+		FROM site
+		WHERE
+		site_name like CONCAT('%',#{queryStr},'%' ) or serial_number like CONCAT('%',#{queryStr},'%')
+		or address like CONCAT('%',#{queryStr},'%')
+	</select>
+	
+	<delete id="deleteSite">
+		UPDATE site
+		SET del_status=1
+		WHERE del_status=0 AND
+		id=#{siteId}
+	</delete>
+</mapper>

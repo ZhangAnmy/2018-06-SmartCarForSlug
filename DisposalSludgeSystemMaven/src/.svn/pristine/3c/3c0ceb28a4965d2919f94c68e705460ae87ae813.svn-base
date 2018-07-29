@@ -1,0 +1,16 @@
+package factory.service;
+
+import java.util.List;
+
+import factory.entity.Site;
+
+public interface SiteService {
+	
+	public List<Site> queryAllSite();
+	
+	public void deleteSite(int siteId);
+	
+	public Site querySiteById(int id);
+	
+	public List<Site> fuzzyQuerySite(String queryStr);
+}

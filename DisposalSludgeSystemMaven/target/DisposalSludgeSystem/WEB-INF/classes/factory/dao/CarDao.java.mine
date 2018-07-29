@@ -1,0 +1,38 @@
+package factory.dao;
+
+import factory.entity.Car;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+public interface CarDao {
+	public List<Car> queryAllCar();
+
+
+	public Car queryCarByDriverId(@Param("driverId") int driverId);
+
+	public Car queryCarById(@Param("carId") int carId);
+
+	public Car queryCarByLicense(@Param("license") String license);
+
+	public List<Car> queryCarByStatus(@Param("status") int status);
+
+	public void deleteCar(@Param("carId") int carId);
+
+	public void addCar(Car car);
+
+	public void editCar(Car car);
+
+	public List<Car> fuzzyQueryCar(@Param("condition") String condition);
+
+	/*public List<Car> fuzzyQueryCarWithNoDriver(@Param("condition") String condition);*/
+
+	public void updateSenserIdSet(@Param("carId") int carId,@Param("sensorIdSet") String sensorIdSet);
+	public String querySensorIdSetByCarId(@Param("carId") int carId);
+
+	public int queryNullCarNum();
+
+
+	public List<Car> queryAllCarOrderByStatus();
+}
+

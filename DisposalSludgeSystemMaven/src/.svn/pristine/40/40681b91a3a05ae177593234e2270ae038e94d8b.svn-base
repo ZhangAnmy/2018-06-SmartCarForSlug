@@ -1,0 +1,14 @@
+package factory.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import factory.entity.User;
+
+public interface UserDao{
+	public User queryUserByUsername(String username);
+	public User queryUserByRealName(@Param("realname") String realname);
+	public void registerUser(User user);
+	public List<User> queryAllDriver();
+}

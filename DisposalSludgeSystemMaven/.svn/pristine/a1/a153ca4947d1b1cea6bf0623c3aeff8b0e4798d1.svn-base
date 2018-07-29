@@ -1,0 +1,32 @@
+package factory.serviceimpl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import factory.dao.UserDao;
+import factory.entity.User;
+import factory.service.UserService;
+
+
+
+@Service
+public class UserServiceImpl implements UserService{
+	@Autowired
+	private UserDao userDao;
+	@Override
+	public User queryUserByUsername(String username){
+		return userDao.queryUserByUsername(username);
+	}
+	@Override
+	public void registerUser(User user){
+		userDao.registerUser(user);
+		
+	}
+	@Override
+	public List<User> quertAllDriver() {
+		
+		return userDao.queryAllDriver();
+	}
+}

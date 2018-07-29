@@ -1,0 +1,35 @@
+package factory.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import factory.entity.Record;
+import factory.entity.Sludge;
+import factory.entity.SludgeFunction;
+
+public interface SludgeDao {
+
+	public List<SludgeFunction> queryAllSludgeFunction();
+
+	public List<Sludge> queryAllSludgeAssignFunc();
+
+	public List<Sludge> queryAllSludgeNotAssignFunc();
+
+	public void deleteSludge(@Param("sludgeId") int sludgeId);
+
+	public void editSludge(Sludge sludge);
+
+	public List<Sludge> querySludgeAssignFuncBySiteId(@Param("siteId") int siteId);
+
+	public List<Sludge> querySludgeNotAssignFuncBySiteId(@Param("siteId") int siteId);
+
+	public List<Sludge> querySludgeAssignFuncByDriverId(@Param("driverId") int driverId);
+
+	public List<Sludge> querySludgeNotAssignFuncByDriverId(@Param("driverId") int driverId);
+	
+	public List<Sludge> querySludegAssignFuncByDate(@Param("startDate") String startDate,@Param("endDate") String endDate);
+	
+	public List<Sludge> querySludegNotAssignFuncByDate(@Param("startDate") String startDate,@Param("endDate") String endDate);
+
+}

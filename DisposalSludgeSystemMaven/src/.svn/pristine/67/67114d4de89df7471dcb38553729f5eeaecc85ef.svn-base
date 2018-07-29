@@ -1,0 +1,109 @@
+package factory.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import factory.entity.Sludge;
+import factory.entity.Site;
+import factory.entity.Sludge;
+import factory.entity.SludgeFunction;
+import factory.entity.User;
+import factory.service.SiteService;
+import factory.service.SludgeService;
+import factory.service.UserService;
+
+
+@Controller
+@RequestMapping("sludge")
+public class SludgeController {
+	private Log log=LogFactory.getLog(SludgeController.class);
+	
+	@Autowired
+	private SludgeService sludgeService;
+	
+	@Autowired
+	private SiteService siteService;
+	
+	@Autowired
+	private UserService userService;
+	@RequestMapping("jumpToSludge")
+	public ModelAndView querySludgeFunctionsAndJumpToSludge(ModelAndView mv){
+		log.info("调用进入sludge.jsp的方法");
+		List<SludgeFunction> sludgeFunctions=new ArrayList<SludgeFunction>();
+		List<User> drivers=new ArrayList<User>();
+		List<Site> sites=new ArrayList<Site>();
+		sludgeFunctions.addAll(sludgeService.queryAllSludgeFunction());
+		drivers.addAll(userService.quertAllDriver());
+		sites.addAll(siteService.queryAllSite());		
+		mv.addObject("sludgeFunctions",sludgeFunctions);
+		mv.addObject("driverList",drivers);
+		mv.addObject("siteList",sites);
+		mv.setViewName("record/sludge");
+		return mv;
+	}	
+	@RequestMapping("queryAllSludge")
+	@ResponseBody
+	public List<Sludge> queryAllSludge(){
+		log.info("进入查询所有污泥的方法");
+		List<Sludge> sludges=new ArrayList<Sludge>();
+		sludges.addAll(sludgeService.queryAllSludge());
+		return sludges;
+	}
+	
+	@RequestMapping("deleteSludge")
+	@ResponseBody
+	public List<Object> deleteSludge(@RequestParam("sludgeId") int sludgeId){
+		log.info("删除用户");
+		System.out.println(sludgeId);
+		sludgeService.deleteSludge(sludgeId);
+		return null;	
+	}
+	@RequestMapping("editSludge")
+	@ResponseBody
+	public List<Object> editSludge(@RequestBody Sludge sludge){
+		log.info("调用修改污泥块方法");
+		System.out.println(sludge.getId()+" "+sludge.getDestinationAddress()+sludge.getFunctionId());
+		sludgeService.editSludge(sludge);
+		List<Object> list=new ArrayList<Object>();
+		return list;
+	}
+	
+	@RequestMapping("querySludgeBySiteId")
+	@ResponseBody
+	public  List<Sludge> querySludgeBySiteName(@RequestParam("siteId") int siteId){
+		log.info("调用querySludgeBySiteId");
+		log.info("要查询的siteId:"+siteId);
+		List<Sludge> sludges=sludgeService.querySludgeBySiteId(siteId);
+		return sludges;	
+	}
+	
+	
+	
+	@RequestMapping("querySludgeByDriverId")
+	@ResponseBody
+	public List<Sludge> querySludgeByDriverId(@RequestParam("driverId") int driverId){
+		log.info("调用querySludgeByDriverId");
+		List<Sludge> sludges=sludgeService.querySludgeByDriverId(driverId);
+		return sludges;
+	}
+	
+	@RequestMapping("querySludgeByDate")
+	@ResponseBody
+	public List<Sludge> querySludgeByDate(@RequestParam("startDate") String startDate,@RequestParam("endDate") String endDate){
+		log.info("调用querySludgeByDate");
+		List<Sludge> sludges=sludgeService.querySludgeByDate(startDate, endDate);
+		return sludges;
+	}
+
+}

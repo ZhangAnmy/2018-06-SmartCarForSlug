@@ -1,0 +1,21 @@
+package factory.serviceimpl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import factory.dao.SiteDao;
+import factory.entity.Site;
+import factory.service.SiteService;
+@Service
+public class SiteServiceImpl implements SiteService{
+	@Autowired
+	private SiteDao siteDao;
+	@Override
+	public List<Site> queryAllSite() {
+		// TODO Auto-generated method stub
+		return siteDao.queryAllSite();
+	}
+
+}

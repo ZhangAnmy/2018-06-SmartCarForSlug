@@ -1,0 +1,67 @@
+package factory.controller;
+
+
+
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import factory.entity.Site;
+import factory.service.SensorService;
+import factory.service.SiteService;
+
+
+@Controller
+@RequestMapping(value="system")
+public class SiteController {
+	@Autowired
+	private SiteService siteService;
+	@Autowired
+	private SensorService sensorService;
+	
+	private static Log log=LogFactory.getLog(SiteController.class);
+	
+	/**
+	 * @description:从site表中查询所有站点
+	 */
+	@RequestMapping("/jumpToSite")
+	public ModelAndView querySite(ModelAndView mv){
+		log.info("初始化查询站点");
+		List<Site> sites=siteService.queryAllSite();
+		for(Site site:sites){
+			site.setSensors(sensorService.querySensorTypeByIdSet(site.getSensorIdSet()));
+		}
+		log.info(sites.toString());
+		mv.addObject("siteList",sites);
+		mv.setViewName("system/siteManage");
+		return mv;
+	}
+	
+	@RequestMapping("deleteSite")
+	@ResponseBody
+	public void deleteSite(@RequestParam("siteId") int siteId){
+		log.info("删除id="+siteId+"的站点记录");
+		Site delSite=siteService.querySiteById(siteId);
+		sensorService.setSiteIdSetNull(delSite.getSensorIdSet());
+		siteService.deleteSite(siteId);
+	}
+	
+	@RequestMapping("fuzzyQuerySite")
+	@ResponseBody
+	public List<Site> fuzzyQuerySite(@RequestParam("queryStr") String queryStr){
+		log.info("模糊查询="+queryStr);
+		List<Site> sites=siteService.fuzzyQuerySite(queryStr);
+		for(Site site:sites){
+			site.setSensors(sensorService.querySensorTypeByIdSet(site.getSensorIdSet()));
+		}
+		return sites;
+	}
+	
+}

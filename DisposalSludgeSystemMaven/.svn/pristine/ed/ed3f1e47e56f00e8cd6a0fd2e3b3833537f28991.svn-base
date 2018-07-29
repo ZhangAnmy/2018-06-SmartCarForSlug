@@ -1,0 +1,25 @@
+package factory.serviceimpl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import factory.dao.UserLoginDao;
+import factory.entity.User;
+import factory.service.UserLoginService;
+
+
+
+@Service
+public class UserLoginServiceImpl implements UserLoginService{
+	@Autowired
+	private UserLoginDao userLoginDao;
+	@Override
+	public User queryUserByUsername(String username){
+		return userLoginDao.queryUserByUsername(username);
+	}
+	@Override
+	public void registerUser(User user){
+		userLoginDao.registerUser(user);
+		
+	}
+}

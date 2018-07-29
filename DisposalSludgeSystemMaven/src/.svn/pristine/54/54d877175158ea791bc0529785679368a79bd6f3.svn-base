@@ -1,0 +1,22 @@
+package factory.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import factory.entity.Record;
+
+public interface RecordDao {
+
+	public List<Record> queryAllRecord();
+	
+	public List<Record> queryRecordBySiteName(@Param("siteName")String siteName);
+	
+	public List<Record> queryRecordByDriverName(@Param("driverName")String driverName);
+	
+	public List<Record> queryRecordByDate(@Param("startDate") String startDate,@Param("endDate") String endDate);
+	
+	public void updateCarId(@Param("recordId") int recordId,@Param("carId")int carId);
+	
+	public void deleteRecord(@Param("recordId") int recordId);
+}

@@ -1,0 +1,361 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<base href="<%=basePath%>">
+
+<title>My JSP 'map.jsp' starting page</title>
+
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf8">
+
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="expires" content="0">
+<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+<meta http-equiv="description" content="This is my page">
+
+<!--
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	-->
+
+<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<link rel="shortcut icon" href="favicon.ico">
+<link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+<link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+
+<link href="css/animate.css" rel="stylesheet">
+<link href="css/style.css?v=4.1.0" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript"
+	src="http://api.map.baidu.com/api?v=2.0&ak=5TmZTw10oplDe4ZehEM6UjnY6rDgocd8"></script>
+
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<style type="text/css">
+.map {
+	position: relative;
+	color: #000;
+	width: 100%;
+	height: 530px;
+	overflow: auto;
+}
+
+.selectMenu {
+	position: absolute;
+	right: 20px;
+	top: 5px;
+}
+
+.bottom_button {
+	position: absolute;
+	right: 2px;
+	bottom: 0px;
+}
+
+.tablehead td {
+	height: 10px;
+	width: 10%;
+	text-align: center;
+	font-size: 12px;
+	font-weight: 700;
+	color: #4A708;
+}
+
+.tablelist td {
+	height: 20px;
+	width: 10%;
+	text-align: center;
+	font-size: 11px;
+	font-weight: 600;
+	color: #4A708;
+}
+
+.tablelist tr {
+	cursor: pointer;
+	onmouseover:sel(this);
+	onmouseout:cle(this);
+}
+</style>
+</head>
+
+<body>
+	<div id="allmap" class="map"></div>
+	<div id="selectMenu" class="selectMenu">
+		<form id="formmap1" method="post" action="">
+			<table class="tb2" height="100%" cellspacing="0" cellpadding="0" width="100%" border="0"
+				style=" margin-left: 0px;">
+				<tr>
+					<td><div class="btn-group">
+							<button data-toggle="dropdown" class="btn btn-default btn-sm dropdown-toggle">
+								状态 <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li><a href="buttons.html#">正常</a>
+								</li>
+								<li><a href="buttons.html#" class="font-bold">处理中</a>
+								</li>
+								<li><a href="buttons.html#">待处理</a>
+								</li>
+								<li class="divider"></li>
+								<li><a href="buttons.html#">所有</a>
+								</li>
+							</ul>
+					</div>
+					</td>
+					<td><input type="text" placeholder="编号/名称" class="input form-control"> <span
+						class="input-group-btn"></span>
+					</td>
+
+					<td align="center">
+						<button type="button" class="btn btn-primary" id="querysubmit">确认</button>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div class="bottom_button">
+	<ul class="nav navbar-top-links navbar-right">
+		<li class="dropdown dropup"><a class="dropdown-toggle count-info" data-toggle="dropdown"
+			href="#"> <i class="fa fa-truck"></i> <span class="label label-warning">3</span> </a>
+			<ul class="dropdown-menu dropdown-messages"
+					style="background: rgba(176,196,222,0.8);">
+					<li>
+							<table class="tablehead" border="0" cellspacing="0" cellpadding="0"
+								style="width:100%">
+								<tr>
+									<td>车牌号</td>
+									<td>目的地</td>
+									<td>预计到达</td>
+								</tr>
+							</table>
+					</li>
+					<li class="divider"></li>
+					<li>
+						<table class="tablelist" border="0" cellspacing="0" cellpadding="0"
+								style="width:100%">
+							<tr>
+								<td style="width:20%;">湘A 23556</td>
+								<td style="width:45%;">长沙市湘岳化工有限责任公司</td>
+								<td style="width:25%;">2018/6/7 19:30</td>
+							</tr>
+							<tr>
+								<td>湘A 23556</td>
+								<td>长沙市湘岳化工有限责任公司</td>
+								<td>2018/6/7 19:30</td>
+							</tr>
+							<tr>
+								<td>湘A 23556</td>
+								<td>长沙市湘岳化工有限责任公司</td>
+								<td>2018/6/7 19:30</td>
+							</tr>
+							<tr>
+								<td>湘A 23556</td>
+								<td>长沙市湘岳化工有限责任公司</td>
+								<td>2018/6/7 19:30</td>
+							</tr>
+							<tr>
+								<td>湘A 23556</td>
+								<td>长沙市湘岳化工有限责任公司</td>
+								<td>2018/6/7 19:30</td>
+							</tr>
+							
+						</table>
+					</li>
+				</ul>
+			</li>
+		<li class="dropdown dropup"><a class="dropdown-toggle count-info" data-toggle="dropdown"
+			href="#"> <i class="fa fa-map-marker"></i> <span class="label label-danger">2</span> </a>
+			<ul class="dropdown-menu dropdown-messages"
+					style="background: rgba(176,196,222,0.8);">
+					<li>
+							<table class="tablehead" border="0" cellspacing="0" cellpadding="0"
+								style="width:100%">
+								<tr>
+									<td style="width:20%;">编号</td>
+									<td style="width:45%;">站点</td>
+									<td style="width:15%;">污泥量</td>
+									<td style="width:10%;">状态</td>
+								</tr>
+							</table>
+					</li>
+					<li class="divider"></li>
+					<li>
+						<table class="tablelist" border="0" cellspacing="0" cellpadding="0"
+								style="width:100%">
+							<tr>
+								<td style="width:20%;">S0001</td>
+								<td style="width:45%;">湖南军信环保集团</td>
+								<td style="width:15%;">50%</td>
+								<td style="width:10%;">正常</td>
+							</tr>
+							<tr>
+								<td>S0002</td>
+								<td>长沙华时捷环保科技发展股份有限公司</td>
+								<td>30%</td>
+								<td>正常</td>
+							</tr>
+							<tr>
+								<td style="color:#FF0000;font-weight: 700;">S0003</td>
+								<td style="color:#FF0000;font-weight: 700;">长沙矿冶研究院矿冶工程技术公司</td>
+								<td style="color:#FF0000;font-weight: 700;">90%</td>
+								<td style="color:#FF0000;font-weight: 700;">待处理</td>
+							</tr>
+							<tr>
+								<td>S0004</td>
+								<td>长沙汇集污泥处理处置有限公司</td>
+								<td>30%</td>
+								<td>正常</td>
+							</tr>
+							<tr>
+								<td style="color:#FFFF00;">S0005</td>
+								<td style="color:#FFFF00;">长沙杰诚环保有限公司</td>
+								<td style="color:#FFFF00;">20%</td>
+								<td style="color:#FFFF00;">处理中</td>
+							</tr>
+														<tr>
+								<td>S0005</td>
+								<td>湖南军永环保集团</td>
+								<td>50%</td>
+								<td>正常</td>
+							</tr>
+							<tr>
+								<td>S0006</td>
+								<td>长沙华时科技发展股份有限公司</td>
+								<td>30%</td>
+								<td>正常</td>
+							</tr>
+							<tr>
+								<td style="color:#FF0000;font-weight: 700;">S0003</td>
+								<td style="color:#FF0000;font-weight: 700;">长沙山崎环保公司</td>
+								<td style="color:#FF0000;font-weight: 700;">90%</td>
+								<td style="color:#FF0000;font-weight: 700;">待处理</td>
+							</tr>
+							<tr>
+								<td>S0007</td>
+								<td>长沙汇集污泥处理处置有限公司</td>
+								<td>30%</td>
+								<td>正常</td>
+							</tr>
+							<tr>
+								<td>S0008</td>
+								<td>长沙正太环保有限公司</td>
+								<td>20%</td>
+								<td>正常</td>
+							</tr>
+							
+						</table>
+					</li>
+				</ul>
+		</li>
+	</ul>
+	</div>
+</body>
+</html>
+<script type="text/javascript">
+	var map = new BMap.Map("allmap");
+	window.map = map;
+	var point = new BMap.Point(112.949494, 28.219868);
+
+	map.addControl(new BMap.NavigationControl()); // 添加平移缩放控件
+	map.addControl(new BMap.ScaleControl()); // 添加比例尺控件
+	map.addControl(new BMap.OverviewMapControl()); //添加缩略地图控件
+	map.enableScrollWheelZoom(); //启用滚轮放大缩小
+	//	map.addControl(new BMap.MapTypeControl());          //添加地图类型控件
+	map.disable3DBuilding();
+	map.centerAndZoom(point, 14);
+	map.setMapStyle({
+		style : 'light'
+	}); //设置地图样式
+	showMap();
+
+	function showMap() {
+		var marker = new Array();
+		var point = new Array();
+		var x = new Array();
+		var y = new Array();
+
+		x[0] = 112.887776;
+		y[0] = 28.214525;
+		x[1] = 112.986226;
+		y[1] = 28.227312;
+		x[2] = 113.00184;
+		y[2] = 28.21145;
+
+		x[3] = 112.892471;
+		y[3] = 28.246640;
+		x[4] = 112.953707;
+		y[4] = 28.210928;
+		x[5] = 112.997214;
+		y[5] = 28.21266;
+
+		var carIcon = new BMap.Icon("img/car.png", new BMap.Size(40, 26), {
+			imageSize : new BMap.Size(40, 26)
+		});
+		var factoryP = new BMap.Icon("img/factory(purple).png", new BMap.Size(
+				40, 44), {
+			imageSize : new BMap.Size(30, 34)
+		});
+		var factoryR = new BMap.Icon("img/factory(red).png", new BMap.Size(40,
+				44), {
+			imageSize : new BMap.Size(30, 34)
+		});
+		var factoryY = new BMap.Icon("img/factory(yellow).png", new BMap.Size(
+				40, 44), {
+			imageSize : new BMap.Size(30, 34)
+		});
+
+		for ( var i = 0; i < 3; i++) {
+			point[i] = new BMap.Point(x[i], y[i]);
+			//size:图标大小，imageSize:图片大小
+			marker[i] = new BMap.Marker(point[i], {
+				icon : carIcon
+			});
+			map.addOverlay(marker[i]);
+		}
+
+		point[3] = new BMap.Point(x[3], y[3]);
+		//size:图标大小，imageSize:图片大小
+		marker[3] = new BMap.Marker(point[3], {
+			icon : factoryP
+		});
+		map.addOverlay(marker[3]);
+
+		point[4] = new BMap.Point(x[4], y[4]);
+		//size:图标大小，imageSize:图片大小
+		marker[4] = new BMap.Marker(point[4], {
+			icon : factoryR
+		});
+		map.addOverlay(marker[4]);
+
+		point[5] = new BMap.Point(x[5], y[5]);
+		//size:图标大小，imageSize:图片大小
+		marker[5] = new BMap.Marker(point[5], {
+			icon : factoryY
+		});
+		map.addOverlay(marker[5]);
+
+		marker[4].addEventListener("mouseover",function(){
+							var opts = {
+								width : 230, // 信息窗口宽度
+							}
+							var lid = '<div><h5>S0003 长沙矿冶研究院矿冶工程技术公司</h5><table style="font-size:12px;">'
+									+ '<tr>'
+									+ '<td style="width:40%;text-align: left;">污泥量：</td><td style="text-align: left;">90%</td>'
+									+ '</tr>'
+									+ '<tr>'
+									+ '<td style="width:40%;text-align: left;">Tel:</td><td style="text-align: left;">0731-85257721</td>'
+									+ '</tr><tr style="color:#FF4500;">'
+									+ '<td style="width:40%;text-align: left;">状态:</td><td style="text-align: left;">待处理</td>'
+									+ '</tr>' + '</table>' + '</div>';
+							var infoWindow = new BMap.InfoWindow(lid,opts); // 创建信息窗口对象 
+							map.openInfoWindow(infoWindow, point[4]);
+						});
+	}
+</script>
+

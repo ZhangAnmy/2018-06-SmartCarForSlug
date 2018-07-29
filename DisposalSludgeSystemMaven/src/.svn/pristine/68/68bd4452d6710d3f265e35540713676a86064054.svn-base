@@ -1,0 +1,15 @@
+package factory.dao;
+
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
+
+import factory.entity.Car;
+
+public interface CarDao {
+	public List<Car> queryAllCar();
+	
+	public Car queryCarByDriverId(@Param("driverId") int driverId);
+	
+	public Car queryCarByLicense(@Param("license") String license);
+	
+}

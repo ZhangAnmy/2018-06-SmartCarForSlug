@@ -1,0 +1,11 @@
+package factory.service;
+
+import java.util.List;
+
+import factory.entity.Site;
+
+public interface SiteService {
+	
+	public List<Site>queryAllSite();
+
+}

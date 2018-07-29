@@ -1,0 +1,46 @@
+package factory.serviceimpl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import factory.dao.SensorDao;
+import factory.dao.SiteDao;
+import factory.entity.Site;
+import factory.service.SiteService;
+@Service
+public class SiteServiceImpl implements SiteService{
+	@Autowired
+	private SiteDao siteDao;
+	
+	/**
+	 * 查询所有工厂
+	 */
+	@Override
+	public List<Site> queryAllSite() {
+		// TODO Auto-generated method stub
+		return siteDao.queryAllSite();
+	}
+
+	@Override
+	public void deleteSite(int siteId) {
+		// TODO Auto-generated method stub
+		siteDao.deleteSite(siteId);
+	}
+
+	@Override
+	public Site querySiteById(int id) {
+		// TODO Auto-generated method stub
+		return siteDao.querySiteById(id);
+	}
+
+	@Override
+	public List<Site> fuzzyQuerySite(String queryStr) {
+		// TODO Auto-generated method stub
+		return siteDao.fuzzyQuerySite(queryStr);
+	}
+	
+	
+
+}

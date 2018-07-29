@@ -1,0 +1,64 @@
+package factory.serviceimpl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import factory.dao.UserDao;
+import factory.entity.User;
+import factory.service.UserService;
+
+
+
+@Service
+public class UserServiceImpl implements UserService{
+	@Autowired
+	private UserDao userDao;
+	/**
+	 * 通过用户名查询用户
+	 */
+	@Override
+	public User queryUserByUsername(String username){
+		return userDao.queryUserByUsername(username);
+	}
+	
+	/**
+	 * 注册用户
+	 */
+	@Override
+	public void registerUser(User user){
+		userDao.registerUser(user);
+		
+	}
+	
+	/**
+	 * 查询所有司机
+	 */
+	@Override
+	public List<User> quertAllDriver() {
+		
+		return userDao.queryAllDriver();
+	}
+
+	/**
+	 * 通过真实姓名查询用户
+	 */
+	@Override
+	public User queryUserByRealName(String realname) {
+		// TODO Auto-generated method stub
+		return userDao.queryUserByRealName(realname);
+	}
+	
+	/*public void removdeUser(String name){
+	
+	}*/
+	
+	@Override
+	public void deleteUser(Map<String, Integer> deleteUserInfo) {
+		int sensorId = deleteUserInfo.get("userId");
+		System.out.println(sensorId);
+		userDao.delectUser(sensorId);
+	}
+}

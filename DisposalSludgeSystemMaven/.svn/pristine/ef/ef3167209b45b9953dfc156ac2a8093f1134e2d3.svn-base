@@ -1,0 +1,19 @@
+package factory.entity;
+
+import lombok.Data;
+
+@Data
+public class User {
+	private int id;
+	private int roleId;
+	private int siteId;
+	private String username;
+	private String realname;
+	private String password;
+	private char sex;
+	private String email;
+	private String telephone;
+	private String idCard;
+	
+
+}

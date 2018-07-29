@@ -1,0 +1,36 @@
+package test;
+
+import java.util.List;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import factory.dao.SensorDao;
+import factory.entity.Sensor;
+import factory.entity.SensorType;
+
+public class SensorTest extends BaseTest {
+
+	@Autowired
+	private SensorDao sensorDao;
+
+	/*@Test
+	public void queryAllSensorType() {
+		List<SensorType> sensorTypes = sensorDao.queryAllSensorType();
+		for(SensorType type:sensorTypes){
+			System.err.println(type.getType());
+		}
+	}
+	
+	@Test
+	public void queryAllSensorOfCar(){
+		List<Sensor> carSensors=sensorDao.queryAllSensorOfCar();
+		System.out.println(carSensors.size());
+	}*/
+	@Test
+	public void queryAllSensorOfSite(){
+		List<Sensor> siteSensors=sensorDao.queryAllSensorOfSite();
+		System.out.println(siteSensors.get(0).getCar());
+	}
+
+}

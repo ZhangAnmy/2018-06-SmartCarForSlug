@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+
+<mapper namespace="factory.dao.UserDao">
+	<resultMap id="UserMap" type="factory.entity.User">
+		<id property="id" column="id"></id>
+		<result property="roleId" column="role_id" />
+		<result property="username" column="username"></result>
+		<result property="realname" column="realname"></result>
+		<result property="idCard" column="id_card"></result>
+		<result property="email" column="email"></result>
+		<result property="telephone" column="telephone"></result>
+		<result property="sex" column="sex"></result>
+		<result property="siteId" column="site_id"></result>
+		<result property="password" column="password"></result>
+		<result property="checkStatus" column="check_status"/>
+		<association property="role" javaType="factory.entity.Role">
+			<id property="id" column="id"/>
+			<result property="role_name" column="role_name" />
+			<result property="description" column="description" />
+		</association>
+	</resultMap>
+	<select id="queryUserByUsername" parameterType="String"
+		resultMap="UserMap">
+		SELECT `user`.*,role.id,role.role_name
+		from `user` LEFT JOIN role ON `user`.role_id=role.id WHERE
+		`user`.del_status=0 AND `user`.username=#{username}
+	</select>
+
+	<select id="queryUserByUserId" resultType="factory.entity.User">
+		select *
+		from user
+		where
+		del_status=0 AND id=#{userId}
+	</select>
+
+	<select id="queryUserByRealName" parameterType="String"
+		resultType="factory.entity.User">
+		select *
+		from user
+		where del_status=0 AND
+		realname=#{realname}
+	</select>
+	<insert id="registerUser" parameterType="factory.entity.User">
+		insert into
+		user(role_id,username,password)
+		values(#{roleId},#{username},#{password})
+	</insert>
+
+	<update id="delectUser">
+		UPDATE user
+		SET del_status=1
+		WHERE del_status=0 AND
+		id=#{userId}
+	</update>
+
+	<select id="queryAllDriver" resultType="factory.entity.User">
+		SELECT *
+		FROM user
+		WHERE
+		del_status=0 AND role_id=3
+	</select>
+
+	<select id="queryNoCarAssignedDriver" resultType="factory.entity.User">
+		SELECT DISTINCT
+		*
+		FROM user
+		WHERE user.del_status=0 AND
+		user.id NOT IN(
+		SELECT driver_id
+		FROM car
+		WHERE car.del_status=0 AND driver_id IS not NULL OR
+		TRIM(driver_id)=''
+		) AND user.role_id=3
+	</select>
+
+	<select id="queryDriverServeOneFactory" resultType="factory.entity.User">
+		select
+		`user`.id,`user`.realname
+		FROM record,`user`,car
+		WHERE
+		record.del_status=0 AND
+		record.site_id=#{siteId} AND
+		record.car_id=car.id AND
+		car.driver_id=`user`.id
+	</select>
+
+	<update id="modifyPasswordByUsername" parameterType="factory.entity.User">
+		update user
+		set password=#{password}
+		where del_status=0 AND
+		id=#{id}
+	</update>
+
+	<update id="updateUserInfo" parameterType="factory.entity.User">
+		update user set
+		realname=#{realname},email=#{email},telephone=#{telephone},sex=#{sex}
+		where del_status=0 AND
+		id=#{id}
+	</update>
+
+	<insert id="addUserByRealName" parameterType="factory.entity.User"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO user
+		(realname,telephone,role_id)
+		VALUES(#{realname},#{telephone},2)
+	</insert>
+
+	<select id="queryAllManager" resultType="factory.entity.User">
+		SELECT *
+		FROM user
+		WHERE
+		del_status=0 AND role_id=2
+	</select>
+
+	<select id="queryManagerByRealName" parameterType="String"
+		resultType="factory.entity.User">
+		select *
+		from user
+		where del_status=0 AND
+		realname=#{realname} AND role_id=2
+	</select>
+</mapper>

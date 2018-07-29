@@ -1,0 +1,25 @@
+package test;
+
+import java.util.List;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import factory.dao.CarDao;
+import factory.entity.Car;
+
+public class CarTest extends BaseTest{
+	@Autowired
+	private CarDao carDao;
+	private static List<Car> carList;
+	
+	@Test
+	public void test(){
+		carList=carDao.queryAllCar();
+		System.out.println(carList.size());
+		for(Car car:carList){
+			System.out.println(car.getDriver().getRealname());
+		}
+	}
+
+}

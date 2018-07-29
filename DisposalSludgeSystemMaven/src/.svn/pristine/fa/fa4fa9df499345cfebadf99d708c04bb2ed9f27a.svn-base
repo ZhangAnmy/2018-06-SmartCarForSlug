@@ -1,0 +1,15 @@
+package factory.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import factory.entity.Site;
+
+public interface SiteDao {
+
+	public List<Site> queryAllSite();
+	
+	public Site querySiteBySiteName(@Param("siteName") String siteName);
+
+}

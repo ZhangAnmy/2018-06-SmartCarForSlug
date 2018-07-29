@@ -1,0 +1,100 @@
+package factory.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import factory.entity.User;
+import factory.service.UserService;
+
+@Controller
+@RequestMapping(value="/user")
+public class UserController {
+	private static Log log = LogFactory.getLog(UserController.class);
+	@Autowired
+	private UserService service;
+	
+	
+	@RequestMapping("private/{formName}")
+	public String loginForm(@PathVariable String formName){
+		return "admin/"+formName;
+	}
+
+	@RequestMapping(value="/loginValidator")
+	@ResponseBody
+	public Object checkLogin(HttpSession session,@RequestParam("loginUsername") String loginUsername,
+			@RequestParam("loginPassword") String loginPassword) {
+		Map<String, String> map = new HashMap<String, String>();
+		log.info(loginUsername + " " + loginPassword);
+		if (loginUsername == null || loginUsername.length() == 0 || loginPassword == null
+				|| loginPassword.length() == 0) {
+			map.put("result", "input");
+			return map;
+		}
+		User queryUser = service.queryUserByUsername(loginUsername);
+		if (queryUser != null) {
+			System.out.println(queryUser.getUsername());
+			if (loginPassword.equals(queryUser.getPassword())) {
+				/*model.addAttribute("id", queryUser.getId());*/
+				session.setAttribute("id", queryUser.getId());
+				session.setAttribute("name", queryUser.getUsername());
+				session.setAttribute("pass", queryUser.getPassword());
+				session.setAttribute("roleId", queryUser.getRoleId());
+				map.put("result", "success");
+				return map;
+			} else {
+				map.put("result", "error");
+				log.info("密码错误" );
+				return map;
+			}
+		} else {
+			map.put("result", "none");
+			log.info("用户名不存在" );
+			return map;
+		}
+
+	}
+
+	@RequestMapping("/register")
+	@ResponseBody
+	public Object registerCount(@RequestBody User user) {
+		/*log.info("register info"+user.getUsername()+" "+user.getPassword());*/
+		Map<String, String> map = new HashMap<String, String>();
+		if (user.getUsername() == null || user.getUsername().length() == 0 || user.getPassword() == null
+				|| user.getPassword().length() == 0) {
+			map.put("result", "input");
+			return map;
+		}
+		User recpUser = service.queryUserByUsername(user.getUsername());
+		if (recpUser != null) {
+			log.info("用户名已被注册");
+			map.put("result", "exist");
+			return map;
+		} else {
+			user.setRoleId(2);
+			service.registerUser(user);
+			log.info("注册成功");
+			map.put("result", "success");
+			return map;
+		}
+	}
+	
+	/**
+	 * @description:查询所有的司机
+	 */
+	public List<User> queryAllDriver(){
+		return service.quertAllDriver();
+	}
+}

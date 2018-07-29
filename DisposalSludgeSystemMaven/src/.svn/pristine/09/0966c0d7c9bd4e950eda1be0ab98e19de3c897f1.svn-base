@@ -1,0 +1,131 @@
+package factory.serviceimpl;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import factory.dao.CarDao;
+import factory.dao.SensorDao;
+import factory.dao.SiteDao;
+import factory.entity.Car;
+import factory.entity.Sensor;
+import factory.entity.SensorType;
+import factory.entity.Site;
+import factory.service.SensorService;
+
+@Service
+public class SensorServiceImpl implements SensorService{
+
+	@Autowired
+	private SensorDao sensorDao;
+	
+	@Autowired
+	private CarDao carDao;
+	
+	@Autowired
+	private SiteDao siteDao;
+	
+	private Log log=LogFactory.getLog(SensorServiceImpl.class);
+	/**
+	 * 查询所有的传感器类型
+	 */
+	@Override
+	public List<SensorType> queryAllSensorType() {
+		// TODO Auto-generated method stub
+		return sensorDao.queryAllSensorType();
+	}
+	
+	/**
+	 * 查询放置在车上的传感器
+	 */
+	@Override
+	public List<Sensor> queryAllSensorOfCar() {
+		// TODO Auto-generated method stub
+		return sensorDao.queryAllSensorOfCar();
+	}
+	
+	/**
+	 * 查询放置在工厂的传感器
+	 */
+	@Override
+	public List<Sensor> queryAllSensorOfSite() {
+		// TODO Auto-generated method stub
+		return sensorDao.queryAllSensorOfSite();
+	}
+	/**
+	 * 添加传感器
+	 */
+	@Override
+	public void addSensor(Map<String, String> sensorInfo) {
+		// TODO Auto-generated method stub
+		Sensor sensor=new Sensor();
+		sensor.setSerialNumber(sensorInfo.get("sensorSerialNumber"));
+		sensor.setTypeId(querySensorTypeByType(sensorInfo.get("sensorType")).getId());		
+		String place=sensorInfo.get("place");
+		//如果是车上的传感器
+		if(sensorInfo.get("placeSelect").equals("slugeCar")){
+			Car car=carDao.queryCarByLicense(place);
+			sensor.setCarId(car.getId());
+		}
+		//如果是工厂上的传感器
+		else{
+			Site site=siteDao.querySiteBySiteName(place);
+			sensor.setSiteId(site.getId());
+		}
+		sensorDao.addSensor(sensor);
+		
+	}
+	/**
+	 * 通过传感器类型查询传感器信息
+	 */
+	@Override
+	public SensorType querySensorTypeByType(String type) {
+		// TODO Auto-generated method stub
+		return sensorDao.querySensorTypeByType(type);
+	}
+
+	@Override
+	public void deleteSensor(Map<String, Integer> deleteSensorInfo) {
+		int sensorId=deleteSensorInfo.get("sensorId");
+		sensorDao.delectSensor(sensorId);		
+	}
+	
+	/**
+	 * 按照条件查询传感器
+	 */
+	@Override
+	public List<Sensor> conditionQuery(Map<String, String> condition) {
+		/*List<Sensor> sensors=new ArrayList<Sensor>();
+		String serialNumber=condition.get("sensorSerialNumber");
+		String type=condition.get("sensorType");
+		String place=condition.get("place");
+		int status=Integer.parseInt(condition.get("status"));
+		log.info(serialNumber+" "+type+" "+place+" "+status);
+		if(serialNumber!=""){ //优先查询编号
+			if(place!="none"){
+				//查询车上/工厂的传感器
+				sensors.add(sensorDao.querySensorOfCarOrSiteBySerialNumber(serialNumber, place));
+			}
+			else{
+				//按照serialNuber查询
+				sensors.add(sensorDao.querySensorOfCarBySerialNumber(serialNumber));
+				sensors.add(sensorDao.querySensorOfSiteBySerialNumber(serialNumber));
+			}		
+		}
+		else {
+			if(place!="none"){
+					//工厂+类型+状态
+			}
+			else{
+				//类型+状态
+			}
+		}*/
+	return null;	
+	}
+
+}

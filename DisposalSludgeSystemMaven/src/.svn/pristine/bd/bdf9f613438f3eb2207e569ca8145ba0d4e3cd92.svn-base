@@ -1,0 +1,175 @@
+package factory.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.config.IntervalTask;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.ModelAndView;
+
+import factory.entity.Role;
+import factory.entity.User;
+import factory.service.Role_authorityService;
+import factory.service.SiteService;
+import factory.service.UserService;
+
+@Controller
+@RequestMapping("user")
+@SessionAttributes("user")
+public class UserController {
+	private static Log log = LogFactory.getLog(UserController.class);
+	@Autowired
+	private UserService service;
+	
+	@Autowired
+	private SiteService siteService;
+	@Autowired
+	private Role_authorityService role_authorityService;
+
+	@RequestMapping("private/{formName}")
+	public String loginForm(@PathVariable String formName) {
+		return "admin/" + formName;
+	}
+
+	@RequestMapping(value = "/loginValidator")
+	@ResponseBody
+	public Map<String, String> checkLogin(HttpSession session, @RequestParam("loginUsername") String loginUsername,
+			@RequestParam("loginPassword") String loginPassword,Model model) {
+		Map<String, String> map = new HashMap<String, String>();
+		log.info(loginUsername + " " + loginPassword);
+		if (loginUsername == null || loginUsername.length() == 0 || loginPassword == null
+				|| loginPassword.length() == 0) {
+			map.put("result", "input");
+			return map;
+		}
+		User queryUser = service.queryUserByUsername(loginUsername);
+		if (queryUser != null) {
+			System.out.println(queryUser.getUsername());
+			if (loginPassword.equals(queryUser.getPassword())) {
+				if(queryUser.getCheckStatus()==0){
+					map.put("result", "notverify");
+					return map;
+				}else if(queryUser.getCheckStatus()==2){
+					map.put("result", "verifying");
+					return map;
+				}else {
+					model.addAttribute("user",queryUser);
+					map.put("result", "success");
+					map.put("roleId", String.valueOf(queryUser.getRoleId()));
+					if(queryUser.getRoleId()==2){
+						int siteId=siteService.querySiteIDByManageId(queryUser.getId());
+						session.setAttribute("siteId", siteId);
+					}
+					return map;
+				}				
+			} else {
+				map.put("result", "error");
+				log.info("密码错误");
+				return map;
+			}
+		} else {
+			map.put("result", "none");
+			log.info("用户名不存在");
+			return map;
+		}
+
+	}
+		//mian.jsp页面获取roleAutho的值
+	@RequestMapping("queryAuthosAndJumpToMain")
+	public ModelAndView queryAuthosAndJumpToMain(@RequestParam("roleId") int roleId, ModelAndView mv) {
+		List<Integer> roleAutho = role_authorityService.queryAllRole_authority(roleId);
+		mv.addObject("authos", roleAutho);
+		mv.setViewName("admin/main");
+		return mv;
+	}
+
+	@RequestMapping("/register")
+	@ResponseBody
+	public Object registerCount(@RequestBody User user) {
+		/*
+		 * log.info("register info"+user.getUsername()+" "+user.getPassword());
+		 */
+		Map<String, String> map = new HashMap<String, String>();
+		if (user.getUsername() == null || user.getUsername().length() == 0 || user.getPassword() == null
+				|| user.getPassword().length() == 0) {
+			map.put("result", "input");
+			return map;
+		}
+		User recpUser = service.queryUserByUsername(user.getUsername());
+		if (recpUser != null) {
+			log.info("用户名已被注册");
+			map.put("result", "exist");
+			return map;
+		} else {
+			user.setRoleId(2);
+			service.registerUser(user);
+			log.info("注册成功");
+			map.put("result", "success");
+			return map;
+		}
+	}
+	
+	
+	//注销
+	@RequestMapping("outLogin")
+	@ResponseBody
+    public String outLogin(HttpSession session){
+        //通过session.invalidata()方法来注销当前的session
+        session.invalidate();
+        return "login";
+    }
+	
+	//修改密码
+		@RequestMapping("modifyPwd") 
+		@ResponseBody
+	    public Map<String, String> modifyPassword(@RequestBody Map<String, Object> userMap) {  
+			log.info("调用modifyPwd");
+			for(Map.Entry<String, Object> entry:userMap.entrySet()){
+				System.out.println(entry.getKey()+"  "+entry.getValue());
+			}
+			Map<String, String> result=new HashMap<String, String>();
+			result.putAll(service.modifyPasswordByUsername(userMap));
+			return result;
+	    }  
+		
+	//修改用户信息
+	@RequestMapping("modifyUserInfo")
+	@ResponseBody
+	public User modifyUserInfo(@RequestBody User user,Model model){
+		log.info("调用modifyUserIfno");		
+		service.updateUserInfo(user);
+		model.addAttribute("user",user);
+		return user;
+	}
+
+	/**
+	 * @description:查询所有的司机
+	public List<User> queryAllDriver() {
+		return service.quertAllDriver();
+	}
+	
+	/**
+	 * @description:查询所有工厂人员
+	 */
+	@RequestMapping("/manager")
+	@ResponseBody
+	public List<User> queryAllManager() {
+		log.info("查询所有工厂人员");
+		return service.queryAllManager();
+	}
+}
